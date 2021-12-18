@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.github.gotchamana</groupId>
+        <artifactId>simple-http-server-parent</artifactId>
+        <version>1.0.0</version>
+        <relativePath>parent.xml</relativePath>
+    </parent>
+
+    <artifactId>simple-http-server</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <name>simple-http-server</name>
+    <description>Simple Http Server project</description>
+
+    <properties>
+        <java.version>17</java.version>
+        <exec.mainClass>io.github.gotchamana.Main</exec.mainClass>
+    </properties>
+
+    <dependencies></dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>native-image</id>
+                        <configuration>
+                            <executable>native-image</executable>
+                            <arguments>
+                                <argument>--no-fallback</argument>
+                                <argument>-H:IncludeResources=logging.properties</argument>
+                                <argument>-jar</argument>
+                                <argument>${project.build.directory}/simple-http-server-${project.version}.jar</argument>
+                                <argument>${project.build.directory}/simple-http-server</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>io.github.gotchamana.Main</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
